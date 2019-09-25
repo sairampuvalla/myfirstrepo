@@ -2,16 +2,16 @@
 - hosts: localhost
   gather_facts: no
   connection: local
-  vars_prompt:
-    - name: status
-      prompt: Enter the Status
-      private: no
-    - name: start_date
-      prompt: Enter the start date
-      private: no
-    - name: end_date
-      prompt: enter the end date
-      private: no
+  #  vars_prompt:
+  #   - name: status
+  #    prompt: Enter the Status
+  #    private: no
+  #  - name: start_date
+  #    prompt: Enter the start date
+  #    private: no
+  #  - name: end_date
+  #    prompt: enter the end date
+  #    private: no
   vars:
     condition: "{{status}}"
     query1: "results[?(@.started>='{{start_date}}')]"
