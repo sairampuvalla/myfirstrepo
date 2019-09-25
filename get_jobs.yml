@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  gather_facts: no
+  connection: local
+  vars_prompt:
+    - name: status
+      prompt: Enter the Status
+      private: no
+    - name: start_date
+      prompt: Enter the start date
+      private: no
+    - name: end_date
+      prompt: enter the end date
+      private: no
+  vars:
+    condition: "{{status}}"
+    query1: "results[?(@.started>='{{start_date}}')]"
+    query2: "[?(@.started<='{{end_date}}')]"
+  tasks:
+    - name: "Get the Jobs"
+      uri:
+        url: "http://35.244.8.160:8080/api/v2/jobs/"
+        method: GET
+        headers:
+          Authorization: Bearer f7DZhaZPWPdirC6ErCnfwfImEp8xpn
+      register: jobs
+    - debug:
+        var: jobs
+    - set_fact:
+        jobs_filter: "{{ jobs.json | json_query(query1)}}"
+    - debug:
+        var: jobs_filter
+    - set_fact:
+        final_result: "{{ jobs_filter | json_query(query2)}}"
+    - debug:
+        var: final_result
+        
