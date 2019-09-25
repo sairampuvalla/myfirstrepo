@@ -19,7 +19,7 @@
   tasks:
     - name: "Get the Jobs"
       uri:
-        url: "http://35.244.8.160:8080/api/v2/jobs/"
+        url: "http://35.244.8.160:8080/api/v2/jobs/?status={{condition}}"
         method: GET
         headers:
           Authorization: Bearer f7DZhaZPWPdirC6ErCnfwfImEp8xpn

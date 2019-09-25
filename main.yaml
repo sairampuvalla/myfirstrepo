@@ -1,0 +1,33 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars_prompt:
+   - name: "base_currency"
+     prompt: "Please enter the base currency"
+     private: no
+     failed_when: giveName is undefined
+   - name: "Amount"
+     prompt: "Please enter the amount"
+     private: no
+     failed_when: Currency is undefined
+   - name: "convert_country"
+     prompt: "Please enter the country to convert"
+     private: no
+     failed_when: convert_currency is undefined
+  tasks:
+   - name: Python Execution
+     currency_exchange:
+       base_currency: "{{ base_currency }}"
+     register: result
+   - debug: var=result
+   - set_fact:
+       Convert_Country: "{{ result.msg.rates[item]}}"
+     with_items:
+       - "{{ convert_country }}"
+   - debug: 
+       var: Convert_Country     
+   - set_fact:
+       Final_Conversion: "{{Convert_Country}} * {{ Amount}}"
+   - debug:
+       msg: "The total amount is {{(Convert_Country | float) * (Amount | float) }}"
