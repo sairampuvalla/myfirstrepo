@@ -2,16 +2,6 @@
 - hosts: localhost
   gather_facts: no
   connection: local
-  #  vars_prompt:
-  #   - name: status
-  #    prompt: Enter the Status
-  #    private: no
-  #  - name: start_date
-  #    prompt: Enter the start date
-  #    private: no
-  #  - name: end_date
-  #    prompt: enter the end date
-  #    private: no
   vars:
     condition: "{{status}}"
     query1: "results[?(@.started>='{{start_date}}')]"
@@ -24,14 +14,18 @@
         headers:
           Authorization: Bearer f7DZhaZPWPdirC6ErCnfwfImEp8xpn
       register: jobs
-    - debug:
-        var: jobs
     - set_fact:
         jobs_filter: "{{ jobs.json | json_query(query1)}}"
-    - debug:
-        var: jobs_filter
     - set_fact:
         final_result: "{{ jobs_filter | json_query(query2)}}"
+    - set_fact:
+        count1: "{{final_result | count}}"
+
+    - name: "set the id"
+      set_fact:
+        ID: "{{final_result[item | int - 1]['id']}}"
+      with_sequence: count="{{count1 | int}}"
+      register: ID_Result
     - debug:
-        var: final_result
-        
+        msg: "{{ID_Result.results[item | int -1]['ansible_facts']['ID']}}"
+      with_sequence: count="{{count1 | int}}"
